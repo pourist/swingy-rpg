@@ -1,4 +1,4 @@
 package com.pourist.swingy.model.artifact;
 
-public class Armor {
+public class Armor extends Artifact {
 }
