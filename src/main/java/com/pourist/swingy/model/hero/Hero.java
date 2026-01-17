@@ -49,10 +49,11 @@ public class Hero {
             return this;
         }
 
-        public Builder withLevel(int level) {
-            if (level <= 0)
-                throw new IllegalStateException("Hero level must be at least 1");
-            this.level = level;
+        public Builder withExperience(int experience) {
+            if (experience < 0)
+                throw new IllegalStateException("Hero experience must be at least 0");
+            this.experience = experience;
+
             return this;
         }
 
@@ -76,7 +77,9 @@ public class Hero {
                 throw new IllegalStateException("Hero name is required");
             if (heroClass == null)
                 throw new IllegalStateException("Hero class is required");
-
+            while (experience >= xpRequiredForNextLevel(this.level)) {
+                this.level++;
+            }
             return new Hero(this);
         }
     }
@@ -97,13 +100,13 @@ public class Hero {
         }
     }
 
-    private int xpRequiredForNextLevel() {
-        return level * 1000 + (level - 1) * (level - 1) * 450;
+    private static int xpRequiredForNextLevel(int currentLevel) {
+        return currentLevel * 1000 + (currentLevel - 1) * (currentLevel - 1) * 450;
     }
 
-    public void updateLevel() {
-        while (experience >= xpRequiredForNextLevel()) {
-            level++;
+    public void updateLevelIfNeeded() {
+        while (experience >= xpRequiredForNextLevel(this.level)) {
+            this.level++;
         }
     }
 
@@ -111,7 +114,7 @@ public class Hero {
         if (gainedExperience < 0)
             throw new IllegalArgumentException("Experience gain must be non-negative");
         this.experience += gainedExperience;
-        updateLevel();
+        updateLevelIfNeeded();
     }
 
     public String getName() {
