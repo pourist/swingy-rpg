@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class HeroTest {
     @Test
     void    builder_shouldCreateHero_whenAllRequiredFieldsAreProvided() {
-        var helm = new Helm();
-        var weapon = new Weapon();
-        var armor = new Armor();
+        var helm = new Helm("He", 5);
+        var weapon = new Weapon("We", 5);
+        var armor = new Armor("Ar", 5);
 
         var hero = new Hero.Builder()
                 .withName("Raul")
@@ -109,6 +109,9 @@ class HeroTest {
     void    equipHero_shouldThrowException_whenArtifactTypeIsUnknown() {
 
         class UnknownArtifact extends Artifact {
+            public UnknownArtifact() {
+                super("Fake");
+            }
         }
 
         var hero = new Hero.Builder()
