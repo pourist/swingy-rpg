@@ -34,6 +34,7 @@ class VillainTest {
                         .withAttack(1)
                         .withDefense(19)
                         .withHitPoints(100)
+                            .build()
         );
     }
 
@@ -46,6 +47,7 @@ class VillainTest {
                                 .withAttack(1)
                                 .withDefense(19)
                                 .withHitPoints(100)
+                                .build()
         );
     }
 
@@ -58,6 +60,7 @@ class VillainTest {
                                 .withAttack(0)
                                 .withDefense(19)
                                 .withHitPoints(100)
+                                .build()
         );
 
         assertThrows(IllegalStateException.class,
@@ -67,6 +70,7 @@ class VillainTest {
                                 .withAttack(101)
                                 .withDefense(19)
                                 .withHitPoints(100)
+                                .build()
         );
     }
 
@@ -79,6 +83,7 @@ class VillainTest {
                                 .withAttack(10)
                                 .withDefense(-1)
                                 .withHitPoints(100)
+                                .build()
         );
 
         assertThrows(IllegalStateException.class,
@@ -88,6 +93,7 @@ class VillainTest {
                                 .withAttack(10)
                                 .withDefense(119)
                                 .withHitPoints(100)
+                                .build()
         );
     }
 
@@ -100,6 +106,7 @@ class VillainTest {
                                 .withAttack(10)
                                 .withDefense(11)
                                 .withHitPoints(2100)
+                                .build()
         );
 
         assertThrows(IllegalStateException.class,
@@ -109,6 +116,7 @@ class VillainTest {
                                 .withAttack(10)
                                 .withDefense(11)
                                 .withHitPoints(-100)
+                                .build()
         );
     }
 }
