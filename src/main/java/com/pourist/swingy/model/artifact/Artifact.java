@@ -13,4 +13,12 @@ public abstract class Artifact {
     public String getName() {
         return name;
     }
+
+    public abstract ArtifactType getType();
+    public abstract int getBonusValue();
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
