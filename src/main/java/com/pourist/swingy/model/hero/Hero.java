@@ -6,8 +6,15 @@ import com.pourist.swingy.model.artifact.Helm;
 import com.pourist.swingy.model.artifact.Weapon;
 import com.pourist.swingy.model.map.Position;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class Hero {
+
+    @NotBlank(message = "Hero name cannot be empty")
     private final String    name;
+
+    @NotNull(message = "Hero class must be selected")
     private final HeroClass heroClass;
 
     private int level;
@@ -21,18 +28,18 @@ public class Hero {
     private Hero(Builder builder) {
         this.name = builder.name;
         this.heroClass = builder.heroClass;
-        this.level = builder.level;
         this.experience = builder.experience;
         this.weapon = builder.weapon;
         this.armor = builder.armor;
         this.helm = builder.helm;
+        level = 1;
+        updateLevelIfNeeded();
     }
 
     public static class Builder {
         private String    name;
         private HeroClass heroClass;
 
-        private int level = 1;
         private int experience = 0;
 
         private Weapon  weapon;
@@ -51,9 +58,8 @@ public class Hero {
 
         public Builder withExperience(int experience) {
             if (experience < 0)
-                throw new IllegalStateException("Hero experience must be at least 0");
+                throw new IllegalArgumentException("Experience must be non-negative");
             this.experience = experience;
-
             return this;
         }
 
@@ -73,13 +79,6 @@ public class Hero {
         }
 
         public Hero build() {
-            if (name == null || name.isBlank())
-                throw new IllegalStateException("Hero name is required");
-            if (heroClass == null)
-                throw new IllegalStateException("Hero class is required");
-            while (experience >= xpRequiredForNextLevel(this.level)) {
-                this.level++;
-            }
             return new Hero(this);
         }
     }
@@ -88,7 +87,7 @@ public class Hero {
         this.position = position;
     }
 
-    public void equipHero(Artifact artifact) {
+    public void equip(Artifact artifact) {
         if (artifact instanceof Weapon) {
             this.weapon = (Weapon) artifact;
         } else if (artifact instanceof Armor) {
@@ -104,7 +103,7 @@ public class Hero {
         return currentLevel * 1000 + (currentLevel - 1) * (currentLevel - 1) * 450;
     }
 
-    public void updateLevelIfNeeded() {
+    private void updateLevelIfNeeded() {
         while (experience >= xpRequiredForNextLevel(this.level)) {
             this.level++;
         }
@@ -147,6 +146,30 @@ public class Hero {
 
     public Helm getHelm() {
         return helm;
+    }
+
+    public int getAttack() {
+        int attack = heroClass.getBaseAttack();
+        attack += (level - 1); // +1 per level
+        if (weapon != null)
+            attack += weapon.getAttackBonus();
+        return attack;
+    }
+
+    public int getDefense() {
+        int defense = heroClass.getBaseDefense();
+        defense += (level - 1); // +1 per level
+        if (armor != null)
+            defense += armor.getDefenseBonus();
+        return defense;
+    }
+
+    public int getHitPoints() {
+        int hp = heroClass.getBaseHitPoints();
+        hp += (level - 1) * 5; // +5 HP per level
+        if (helm != null)
+            hp += helm.getHitPointsBonus();
+        return hp;
     }
 
     @Override

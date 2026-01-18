@@ -52,37 +52,6 @@ class HeroTest {
     }
 
     @Test
-    void    builder_shouldThrowException_whenNameIsNull() {
-        assertThrows(IllegalStateException.class,
-                () ->
-                        new Hero.Builder()
-                                .withHeroClass(HeroClass.ROGUE)
-                                .build()
-        );
-    }
-
-    @Test
-    void    builder_shouldThrowException_whenNameIsBlank() {
-        assertThrows(IllegalStateException.class,
-                () ->
-                        new Hero.Builder()
-                                .withName("")
-                                .withHeroClass(HeroClass.ROGUE)
-                                .build()
-        );
-    }
-
-    @Test
-    void    builder_shouldThrowException_whenHeroClassIsNull() {
-        assertThrows(IllegalStateException.class,
-                () ->
-                        new Hero.Builder()
-                                .withName("Arthur")
-                                .build()
-        );
-    }
-
-    @Test
     void    builder_shouldSetLevelBasedOnExperience_whenExperienceCrossesMultipleLevelThresholds() {
         var hero = new Hero.Builder()
                 .withName("Raul")
@@ -95,7 +64,7 @@ class HeroTest {
 
     @Test
     void    builder_shouldThrowException_whenExperienceIsNegative() {
-        assertThrows(IllegalStateException.class,
+        assertThrows(IllegalArgumentException.class,
                 () ->
                         new Hero.Builder()
                                 .withName("Arthur")
@@ -121,7 +90,7 @@ class HeroTest {
         Artifact unknownArtifact = new UnknownArtifact();
         assertThrows(IllegalArgumentException.class,
                 () ->
-                        hero.equipHero(unknownArtifact)
+                        hero.equip(unknownArtifact)
         );
     }
 
@@ -187,6 +156,51 @@ class HeroTest {
 
         assertEquals(5000, hero.getExperience());
         assertEquals(4, hero.getLevel());
+    }
+
+    @Test
+    void getAttack_shouldIncreaseWithLevel() {
+        var hero = new Hero.Builder()
+                .withName("Raul")
+                .withHeroClass(HeroClass.WARRIOR)
+                .build();
+
+        int baseAttack = hero.getAttack();
+
+        hero.addExperience(3000);
+        int leveledAttack = hero.getAttack();
+
+        assertTrue(leveledAttack > baseAttack);
+    }
+
+    @Test
+    void getDefense_shouldIncreaseWithLevel() {
+        var hero = new Hero.Builder()
+                .withName("Raul")
+                .withHeroClass(HeroClass.WARRIOR)
+                .build();
+
+        int baseDefense = hero.getDefense();
+
+        hero.addExperience(3000);
+        int leveledDefense = hero.getDefense();
+
+        assertTrue(leveledDefense > baseDefense);
+    }
+
+    @Test
+    void getHitPoints_shouldIncreaseWithLevel() {
+        var hero = new Hero.Builder()
+                .withName("Raul")
+                .withHeroClass(HeroClass.WARRIOR)
+                .build();
+
+        int baseHp = hero.getHitPoints();
+
+        hero.addExperience(3000);
+        int leveledHp = hero.getHitPoints();
+
+        assertTrue(leveledHp > baseHp);
     }
 
 }
