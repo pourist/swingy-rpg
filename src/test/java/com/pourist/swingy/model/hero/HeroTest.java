@@ -1,9 +1,6 @@
 package com.pourist.swingy.model.hero;
 
-import com.pourist.swingy.model.artifact.Armor;
-import com.pourist.swingy.model.artifact.Artifact;
-import com.pourist.swingy.model.artifact.Helm;
-import com.pourist.swingy.model.artifact.Weapon;
+import com.pourist.swingy.model.artifact.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -81,7 +78,18 @@ class HeroTest {
             public UnknownArtifact() {
                 super("Fake");
             }
+
+            @Override
+            public ArtifactType getType() {
+                return null; // or throw
+            }
+
+            @Override
+            public int getBonusValue() {
+                return 0;
+            }
         }
+
 
         var hero = new Hero.Builder()
                 .withName("Raul")
