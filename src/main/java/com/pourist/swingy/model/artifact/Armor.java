@@ -24,19 +24,4 @@ public class Armor extends Artifact {
     public int getBonusValue() {
         return defenseBonus;
     }
-
-    @Override
-    public String toString() {
-        return getName() + " (DEF +" + defenseBonus + ")";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Armor)) return false;
-        Armor armor = (Armor) o;
-        return defenseBonus == armor.defenseBonus &&
-                getName().equals(armor.getName());
-    }
-
 }

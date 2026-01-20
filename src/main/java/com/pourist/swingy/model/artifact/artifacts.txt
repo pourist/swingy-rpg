@@ -1,0 +1,19 @@
+TYPE,NAME,BONUS,MIN_LEVEL,MAX_LEVEL
+
+WEAPON,Short Sword,3,1,3
+WEAPON,Dagger,2,1,2
+WEAPON,Long Sword,6,3,6
+WEAPON,Battle Axe,8,5,8
+WEAPON,War Hammer,10,7,99
+
+ARMOR,Leather Armor,2,1,3
+ARMOR,Reinforced Vest,4,2,5
+ARMOR,Chainmail,5,4,7
+ARMOR,Scale Armor,7,6,9
+ARMOR,Plate Armor,10,8,99
+
+HELM,Cloth Hood,1,1,2
+HELM,Iron Helm,4,3,5
+HELM,Steel Helm,6,5,8
+HELM,Golden Crown,8,7,10
+HELM,Dragon Skull,12,9,99

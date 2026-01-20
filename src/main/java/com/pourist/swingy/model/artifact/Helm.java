@@ -24,19 +24,4 @@ public class Helm extends Artifact {
     public int getBonusValue() {
         return hitPointsBonus;
     }
-
-    @Override
-    public String toString() {
-        return getName() + " (HP +" + hitPointsBonus + ")";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Helm)) return false;
-        Helm helm = (Helm) o;
-        return hitPointsBonus == helm.hitPointsBonus &&
-                getName().equals(helm.getName());
-    }
-
 }

@@ -12,10 +12,6 @@ public class Weapon extends Artifact {
         this.attackBonus = attackBonus;
     }
 
-    public int getAttackBonus() {
-        return attackBonus;
-    }
-
     @Override
     public ArtifactType getType() {
         return ArtifactType.WEAPON;
@@ -25,19 +21,4 @@ public class Weapon extends Artifact {
     public int getBonusValue() {
         return attackBonus;
     }
-
-    @Override
-    public String toString() {
-        return getName() + " (ATK +" + attackBonus + ")";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Weapon)) return false;
-        Weapon weapon = (Weapon) o;
-        return attackBonus == weapon.attackBonus &&
-                getName().equals(weapon.getName());
-    }
-
 }

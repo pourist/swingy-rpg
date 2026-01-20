@@ -19,6 +19,6 @@ public abstract class Artifact {
 
     @Override
     public String toString() {
-        return name;
+        return name + " (+" + getBonusValue() + ")";
     }
 }
