@@ -19,6 +19,7 @@ public class Hero {
 
     private int level;
     private int experience;
+    private int currentHitPoints;
 
     private Position    position;
     private Weapon  weapon;
@@ -32,8 +33,11 @@ public class Hero {
         this.weapon = builder.weapon;
         this.armor = builder.armor;
         this.helm = builder.helm;
-        level = 1;
+
+        this.level = 1;
         updateLevelIfNeeded();
+
+        this.currentHitPoints = getMaxHitPoints();
     }
 
     public static class Builder {
@@ -105,7 +109,12 @@ public class Hero {
 
     private void updateLevelIfNeeded() {
         while (experience >= xpRequiredForNextLevel(this.level)) {
+            int oldMax = getMaxHitPoints();
+
             this.level++;
+
+            int newMax = getMaxHitPoints();
+            currentHitPoints += (newMax - oldMax);
         }
     }
 
@@ -165,12 +174,29 @@ public class Hero {
     }
 
     public int getHitPoints() {
+        return currentHitPoints;
+    }
+
+    public int getMaxHitPoints() {
         int hp = heroClass.getBaseHitPoints();
-        hp += (level - 1) * 5; // +5 HP per level
+        hp += (level - 1) * 5;
         if (helm != null)
             hp += helm.getHitPointsBonus();
         return hp;
     }
+
+    public void takeDamage(int damage) {
+        if (damage < 0)
+            throw new IllegalArgumentException("Damage must be non-negative");
+
+        currentHitPoints = Math.max(0, currentHitPoints - damage);
+    }
+
+
+    public boolean isAlive() {
+        return currentHitPoints > 0;
+    }
+
 
     @Override
     public String toString() {
@@ -179,11 +205,13 @@ public class Hero {
                 ", class=" + heroClass +
                 ", level=" + level +
                 ", experience=" + experience +
+                ", hp=" + currentHitPoints + "/" + getMaxHitPoints() +
                 ", position=" + (position != null ? position : "not placed") +
                 ", weapon=" + (weapon != null ? weapon : "none") +
                 ", armor=" + (armor != null ? armor : "none") +
                 ", helm=" + (helm != null ? helm : "none") +
                 '}';
     }
+
 
 }

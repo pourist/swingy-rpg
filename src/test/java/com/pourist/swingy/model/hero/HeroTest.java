@@ -197,18 +197,35 @@ class HeroTest {
     }
 
     @Test
-    void getHitPoints_shouldIncreaseWithLevel() {
+    void getMaxHitPoints_shouldIncreaseWithLevel() {
         var hero = new Hero.Builder()
                 .withName("Raul")
                 .withHeroClass(HeroClass.WARRIOR)
                 .build();
 
-        int baseHp = hero.getHitPoints();
+        int baseMaxHp = hero.getMaxHitPoints();
 
         hero.addExperience(3000);
-        int leveledHp = hero.getHitPoints();
+        int leveledMaxHp = hero.getMaxHitPoints();
 
-        assertTrue(leveledHp > baseHp);
+        assertTrue(leveledMaxHp > baseMaxHp);
+    }
+
+    @Test
+    void currentHitPoints_shouldIncreaseByDeltaOnLevelUp() {
+        var hero = new Hero.Builder()
+                .withName("Raul")
+                .withHeroClass(HeroClass.WARRIOR)
+                .build();
+
+        hero.takeDamage(10);
+        int hpBefore = hero.getHitPoints();
+
+        hero.addExperience(3000);
+
+        int hpAfter = hero.getHitPoints();
+        assertTrue(hpAfter > hpBefore);
+        assertTrue(hpAfter <= hero.getMaxHitPoints());
     }
 
 }
