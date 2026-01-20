@@ -1,6 +1,5 @@
 package com.pourist.swingy.model.artifact;
 
-import java.util.Objects;
 
 public class Weapon extends Artifact {
 
@@ -41,8 +40,4 @@ public class Weapon extends Artifact {
                 getName().equals(weapon.getName());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), attackBonus);
-    }
 }

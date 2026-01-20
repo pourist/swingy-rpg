@@ -1,7 +1,5 @@
 package com.pourist.swingy.model.artifact;
 
-import java.util.Objects;
-
 public class Armor extends Artifact {
 
     private final int defenseBonus;
@@ -41,8 +39,4 @@ public class Armor extends Artifact {
                 getName().equals(armor.getName());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), defenseBonus);
-    }
 }

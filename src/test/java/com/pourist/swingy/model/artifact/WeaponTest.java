@@ -30,4 +30,13 @@ class WeaponTest {
                         new Weapon("Ak47", -1)
         );
     }
+
+    @Test
+    void shouldBeEqual_whenNameAndBonusAreSame() {
+        var w1 = new Weapon("Ak47", 12);
+        var w2 = new Weapon("Ak47", 12);
+
+        assertEquals(w1, w2);
+    }
+
 }

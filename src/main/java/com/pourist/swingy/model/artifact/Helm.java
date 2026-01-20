@@ -1,7 +1,5 @@
 package com.pourist.swingy.model.artifact;
 
-import java.util.Objects;
-
 public class Helm extends Artifact {
 
     private final int hitPointsBonus;
@@ -41,8 +39,4 @@ public class Helm extends Artifact {
                 getName().equals(helm.getName());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), hitPointsBonus);
-    }
 }
