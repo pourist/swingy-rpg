@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class ArtifactFactory {
 
-    private List<ArtifactDef> artifacts;
+    private final List<ArtifactDef> artifacts;
     private final Random random = new Random();
 
     public ArtifactFactory(Path filePath) {
