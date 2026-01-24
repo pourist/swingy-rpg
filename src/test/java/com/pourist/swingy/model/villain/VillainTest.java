@@ -15,7 +15,6 @@ class VillainTest {
                 .withAttack(1)
                 .withDefense(19)
                 .withHitPoints(100)
-                .withEquipment(armor)
                 .build();
 
         assertNotNull(villain);

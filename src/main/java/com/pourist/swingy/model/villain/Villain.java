@@ -1,23 +1,25 @@
 package com.pourist.swingy.model.villain;
 
+import com.pourist.swingy.model.artifact.Armor;
 import com.pourist.swingy.model.artifact.Artifact;
+import com.pourist.swingy.model.artifact.Helm;
+import com.pourist.swingy.model.artifact.Weapon;
 
 public class Villain {
     private final String name;
 
     private final int attack;
     private final int defense;
-    private final int hitPoints;
+    private final int maxHitPoints;
+    private int currentHitPoints;
+    private Artifact equipment;
 
-    private final Artifact equipment;
-
-    Villain(Builder builder) {
+    private Villain(Builder builder) {
         name = builder.name;;
-        attack = builder.attack;;
+        attack = builder.attack;
         defense = builder.defense;
-        hitPoints = builder.hitPoints;
-
-        equipment = builder.equipment;
+        maxHitPoints = builder.hitPoints;
+        currentHitPoints = maxHitPoints;
     }
 
     public static class Builder {
@@ -25,8 +27,6 @@ public class Villain {
         private int    attack;
         private int    defense;
         private int    hitPoints;
-
-        private Artifact equipment;
 
         public Builder withName(String name) {
             this.name = name;
@@ -45,11 +45,6 @@ public class Villain {
 
         public Builder withHitPoints(int hitPoints) {
             this.hitPoints = hitPoints;
-            return this;
-        }
-
-        public Builder withEquipment(Artifact equipment) {
-            this.equipment = equipment;
             return this;
         }
 
@@ -79,12 +74,40 @@ public class Villain {
         return defense;
     }
 
-    public int getHitPoints() {
-        return hitPoints;
+    public int getMaxHitPoints() {
+        return maxHitPoints;
+    }
+
+    public int getHitPoints() { return currentHitPoints; }
+
+    public boolean isAlive() {
+        return (currentHitPoints > 0);
     }
 
     public Artifact getEquipment() {
         return equipment;
+    }
+
+    public void equip(Artifact artifact) {
+        if (artifact instanceof Weapon) {
+            this.equipment = (Weapon) artifact;
+        } else if (artifact instanceof Armor) {
+            this.equipment = (Armor) artifact;
+        } else if (artifact instanceof Helm) {
+            this.equipment = (Helm) artifact;
+        } else {
+            throw new IllegalArgumentException("Unknown artifact type");
+        }
+    }
+
+    public void takeDamage(int damage) {
+        if (damage < 0)
+            throw new IllegalArgumentException("Damage must be non-negative");
+        currentHitPoints = Math.max(0, currentHitPoints - damage);
+    }
+
+    public int getExperienceReward() {
+        return (attack + defense + maxHitPoints) * 2;
     }
 }
 
