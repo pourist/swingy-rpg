@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 public class Hero {
 
     @NotBlank(message = "Hero name cannot be empty")
+    @NotNull(message = "Hero name cannot be null")
     private final String    name;
 
     @NotNull(message = "Hero class must be selected")
@@ -161,7 +162,7 @@ public class Hero {
         int attack = heroClass.getBaseAttack();
         attack += (level - 1); // +1 per level
         if (weapon != null)
-            attack += weapon.getAttackBonus();
+            attack += weapon.getBonusValue();
         return attack;
     }
 
@@ -169,7 +170,7 @@ public class Hero {
         int defense = heroClass.getBaseDefense();
         defense += (level - 1); // +1 per level
         if (armor != null)
-            defense += armor.getDefenseBonus();
+            defense += armor.getBonusValue();
         return defense;
     }
 
@@ -181,7 +182,7 @@ public class Hero {
         int hp = heroClass.getBaseHitPoints();
         hp += (level - 1) * 5;
         if (helm != null)
-            hp += helm.getHitPointsBonus();
+            hp += helm.getBonusValue();
         return hp;
     }
 
