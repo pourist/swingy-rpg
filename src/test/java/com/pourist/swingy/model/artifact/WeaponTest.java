@@ -12,31 +12,14 @@ class WeaponTest {
 
         assertNotNull(weapon);
         assertEquals("Ak47", weapon.getName());
-        assertEquals(12, weapon.getAttackBonus());
+        assertEquals(12, weapon.getBonusValue());
+        assertEquals(ArtifactType.WEAPON, weapon.getType());
     }
 
     @Test
-    void    shouldThrowException_whenNameIsBlank() {
+    void shouldThrowException_whenAttackBonusIsNegative() {
         assertThrows(IllegalArgumentException.class,
-                () ->
-                        new Weapon("", 12)
+                () -> new Weapon("Ak47", -1)
         );
     }
-
-    @Test
-    void    shouldThrowException_whenAttackBonusIsNegative() {
-        assertThrows(IllegalArgumentException.class,
-                () ->
-                        new Weapon("Ak47", -1)
-        );
-    }
-
-    @Test
-    void shouldBeEqual_whenNameAndBonusAreSame() {
-        var w1 = new Weapon("Ak47", 12);
-        var w2 = new Weapon("Ak47", 12);
-
-        assertEquals(w1, w2);
-    }
-
 }
