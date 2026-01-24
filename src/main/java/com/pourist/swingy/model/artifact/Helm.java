@@ -11,10 +11,6 @@ public class Helm extends Artifact {
         this.hitPointsBonus = hitPointsBonus;
     }
 
-    public int getHitPointsBonus() {
-        return hitPointsBonus;
-    }
-
     @Override
     public ArtifactType getType() {
         return ArtifactType.HELM;

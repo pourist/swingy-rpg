@@ -11,10 +11,6 @@ public class Armor extends Artifact {
         this.defenseBonus = defenseBonus;
     }
 
-    public int getDefenseBonus() {
-        return defenseBonus;
-    }
-
     @Override
     public ArtifactType getType() {
         return ArtifactType.ARMOR;
