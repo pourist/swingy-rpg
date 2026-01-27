@@ -15,7 +15,7 @@ class VillainFactoryTest {
     Path tempDir;
 
     private Path createVillainFile(String content) throws IOException {
-        Path file = tempDir.resolve("villains.txt");
+        Path file = tempDir.resolve("data/villains.txt");
         Files.writeString(file, content);
         return file;
     }
