@@ -15,7 +15,7 @@ class ArtifactFactoryTest {
     Path tempDir;
 
     private Path createArtifactFile(String content) throws IOException {
-        Path file = tempDir.resolve("artifacts.txt");
+        Path file = tempDir.resolve("data/artifacts.txt");
         Files.writeString(file, content);
         return file;
     }
