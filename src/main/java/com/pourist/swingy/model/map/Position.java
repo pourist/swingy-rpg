@@ -17,7 +17,15 @@ public class Position {
         return y;
     }
 
-    public boolean equals(Position other) {
-        return x == other.getX() && y == other.getY();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Position)) return false;
+        Position p = (Position) o;
+        return x == p.x && y == p.y;
     }
-}
+
+    @Override
+    public int hashCode() {
+        return 31 * x + y;
+    }}
