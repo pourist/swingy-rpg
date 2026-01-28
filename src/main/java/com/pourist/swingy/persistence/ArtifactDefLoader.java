@@ -1,4 +1,7 @@
-package com.pourist.swingy.model.artifact;
+package com.pourist.swingy.persistence;
+
+import com.pourist.swingy.model.artifact.ArtifactDef;
+import com.pourist.swingy.model.artifact.ArtifactType;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
