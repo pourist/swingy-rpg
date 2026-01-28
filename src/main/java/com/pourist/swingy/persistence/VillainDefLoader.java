@@ -1,4 +1,6 @@
-package com.pourist.swingy.model.villain;
+package com.pourist.swingy.persistence;
+
+import com.pourist.swingy.model.villain.VillainDef;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
