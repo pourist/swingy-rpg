@@ -8,7 +8,7 @@ public class FileHeroRepository implements HeroRepository {
 
     @Override
     public List<Hero> loadAll() {
-        // read heroes from text file
+
         return null;
     }
 
