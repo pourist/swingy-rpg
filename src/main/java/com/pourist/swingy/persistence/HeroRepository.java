@@ -7,4 +7,5 @@ import java.util.List;
 public interface HeroRepository {
     List<Hero> loadAll();
     void save(Hero hero);
+    void remove(Hero hero);
 }
