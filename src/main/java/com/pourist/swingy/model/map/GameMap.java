@@ -86,20 +86,4 @@ public class GameMap {
     public Position getCenterOfTheMap() {
         return center;
     }
-
-    public void printMap() {
-        for (int x = 0; x < mapHeight; x++) {
-            for (int y = 0; y < mapHeight; y++) {
-                Position temp = new Position(x, y);
-                Villain villain = villains.get(temp);
-                if (villain != null)
-                    System.out.print(villain.getName() + " ");
-                else if (temp.equals(center))
-                    System.out.print("C ");
-                else
-                    System.out.print("0 ");
-            }
-            System.out.println();
-        }
-    }
 }
