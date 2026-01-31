@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 public class Hero {
 
     @NotBlank(message = "Hero name cannot be empty")
-    @NotNull(message = "Hero name cannot be null")
     private final String    name;
 
     @NotNull(message = "Hero class must be selected")

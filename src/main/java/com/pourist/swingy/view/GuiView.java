@@ -2,7 +2,7 @@ package com.pourist.swingy.view;
 
 import com.pourist.swingy.model.hero.Hero;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class GuiView implements View {
 
@@ -12,7 +12,7 @@ public class GuiView implements View {
     }
 
     @Override
-    public int choosHeroToLoad(ArrayList<Hero> savedHeroes) {
+    public int choosHeroToLoad(List<Hero> savedHeroes) {
         return 1;
     }
 }
