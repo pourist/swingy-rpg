@@ -65,5 +65,6 @@ public class GameEngine {
 
     public void setUpMap(){
         this.gameMap = MapFactory.createMap(hero.getLevel());
+        hero.setPosition(gameMap.getCenterOfTheMap());
     }
 }
