@@ -1,75 +1,59 @@
 package com.pourist.swingy.model.artifact;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArtifactFactoryTest {
 
-    @TempDir
-    Path tempDir;
-
-    private Path createArtifactFile(String content) throws IOException {
-        Path file = tempDir.resolve("data/artifacts.txt");
-        Files.writeString(file, content);
-        return file;
+    @Test
+    void constructor_shouldThrowException_whenArtifactListIsNull() {
+        assertThrows(IllegalStateException.class,
+                () -> new ArtifactFactory(null));
     }
 
     @Test
-    void shouldLoadArtifactsAndReturnArtifactForValidLevel() throws IOException {
-        Path file = createArtifactFile("""
-                TYPE,NAME,BONUS,MIN_LEVEL,MAX_LEVEL
-                WEAPON,Sword,5,1,3
-                ARMOR,Armor,4,1,3
-                HELM,Helm,3,1,3
-                """);
-
-        ArtifactFactory factory = new ArtifactFactory(file);
-
-        Artifact artifact = factory.getRandomArtifactForLevel(2);
-
-        assertNotNull(artifact);
-        assertTrue(artifact.getBonusValue() > 0);
+    void constructor_shouldThrowException_whenArtifactListIsEmpty() {
+        assertThrows(IllegalStateException.class,
+                () -> new ArtifactFactory(List.of()));
     }
 
     @Test
-    void shouldReturnNullWhenNoArtifactMatchesLevel() throws IOException {
-        Path file = createArtifactFile("""
-                TYPE,NAME,BONUS,MIN_LEVEL,MAX_LEVEL
-                WEAPON,Sword,5,5,10
-                """);
+    void getRandomArtifactForLevel_shouldReturnNull_whenNoArtifactMatchesLevel() {
+        ArtifactDef def = new ArtifactDef(
+                ArtifactType.WEAPON,
+                "Sword",
+                5,
+                5,   // minLevel
+                10   // maxLevel
+        );
 
-        ArtifactFactory factory = new ArtifactFactory(file);
+        ArtifactFactory factory = new ArtifactFactory(List.of(def));
 
         Artifact artifact = factory.getRandomArtifactForLevel(1);
+
         assertNull(artifact);
     }
 
     @Test
-    void shouldThrowExceptionWhenFileIsInvalid() throws IOException {
-        Path file = createArtifactFile("""
-                TYPE,NAME,BONUS,MIN_LEVEL,MAX_LEVEL
-                WEAPON,Sword,0,1,3
-                """);
-
-        assertThrows(IllegalStateException.class,
-                () -> new ArtifactFactory(file)
+    void getRandomArtifactForLevel_shouldReturnArtifact_whenLevelIsEligible() {
+        ArtifactDef def = new ArtifactDef(
+                ArtifactType.WEAPON,
+                "Sword",
+                5,
+                1,
+                10
         );
-    }
 
-    @Test
-    void shouldThrowExceptionWhenFileIsEmpty() throws IOException {
-        Path file = createArtifactFile("""
-                TYPE,NAME,BONUS,MIN_LEVEL,MAX_LEVEL
-                """);
+        ArtifactFactory factory = new ArtifactFactory(List.of(def));
 
-        assertThrows(IllegalStateException.class,
-                () -> new ArtifactFactory(file)
-        );
+        Artifact artifact = factory.getRandomArtifactForLevel(5);
+
+        assertNotNull(artifact);
+        assertEquals(ArtifactType.WEAPON, artifact.getType());
+        assertEquals("Sword", artifact.getName());
+        assertEquals(5, artifact.getBonusValue());
     }
 }

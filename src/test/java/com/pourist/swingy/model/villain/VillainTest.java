@@ -17,6 +17,8 @@ class VillainTest {
                 .withHitPoints(100)
                 .build();
 
+        villain.equip(armor);
+
         assertNotNull(villain);
         assertEquals("Div", villain.getName());
         assertEquals(1, villain.getAttack());

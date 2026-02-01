@@ -1,75 +1,58 @@
 package com.pourist.swingy.model.villain;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class VillainFactoryTest {
 
-    @TempDir
-    Path tempDir;
-
-    private Path createVillainFile(String content) throws IOException {
-        Path file = tempDir.resolve("data/villains.txt");
-        Files.writeString(file, content);
-        return file;
+    @Test
+    void constructor_shouldThrowException_whenVillainListIsNull() {
+        assertThrows(IllegalStateException.class,
+                () -> new VillainFactory(null));
     }
 
     @Test
-    void shouldReturnVillain_whenHeroLevelIsInRange() throws IOException {
-        Path file = createVillainFile("""
-                NAME,MIN_LEVEL,MAX_LEVEL,POWER_MODIFIER
-                Goblin,1,3,1
-                Orc,4,6,3
-                """);
-
-        VillainFactory factory = new VillainFactory(file);
-
-        Villain villain = factory.getRandomVillaintForLevel(2);
-
-        assertNotNull(villain);
-        assertEquals("Goblin", villain.getName());
+    void constructor_shouldThrowException_whenVillainListIsEmpty() {
+        assertThrows(IllegalStateException.class,
+                () -> new VillainFactory(List.of()));
     }
 
     @Test
-    void shouldReturnNull_whenNoVillainMatchesLevel() throws IOException {
-        Path file = createVillainFile("""
-                NAME,MIN_LEVEL,MAX_LEVEL,POWER_MODIFIER
-                Orc,5,7,3
-                """);
+    void getRandomVillainForLevel_shouldReturnNull_whenNoVillainMatchesLevel() {
+        VillainDef def = new VillainDef(
+                "Goblin",
+                5,   // minLevel
+                10,  // maxLevel
+                1
+        );
 
-        VillainFactory factory = new VillainFactory(file);
+        VillainFactory factory = new VillainFactory(List.of(def));
 
-        Villain villain = factory.getRandomVillaintForLevel(1);
+        Villain villain = factory.getRandomVillainForLevel(1);
 
         assertNull(villain);
     }
 
     @Test
-    void shouldThrowException_whenFileLineIsInvalid() throws IOException {
-        Path file = createVillainFile("""
-                NAME,MIN_LEVEL,MAX_LEVEL,POWER_MODIFIER
-                Goblin,1,3
-                """);
-
-        assertThrows(IllegalStateException.class,
-                () -> new VillainFactory(file)
+    void getRandomVillainForLevel_shouldReturnVillain_whenLevelIsEligible() {
+        VillainDef def = new VillainDef(
+                "Goblin",
+                1,
+                10,
+                1
         );
-    }
 
-    @Test
-    void shouldThrowException_whenNoVillainsAreLoaded() throws IOException {
-        Path file = createVillainFile("""
-                NAME,MIN_LEVEL,MAX_LEVEL,POWER_MODIFIER
-                """);
+        VillainFactory factory = new VillainFactory(List.of(def));
 
-        assertThrows(IllegalStateException.class,
-                () -> new VillainFactory(file)
-        );
+        Villain villain = factory.getRandomVillainForLevel(5);
+
+        assertNotNull(villain);
+        assertEquals("Goblin", villain.getName());
+        assertTrue(villain.getAttack() > 0);
+        assertTrue(villain.getDefense() > 0);
+        assertTrue(villain.getMaxHitPoints() > 0);
     }
 }
