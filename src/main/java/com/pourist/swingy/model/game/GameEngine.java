@@ -4,11 +4,16 @@ import com.pourist.swingy.model.hero.Hero;
 import com.pourist.swingy.model.map.GameMap;
 import com.pourist.swingy.model.map.MapFactory;
 import com.pourist.swingy.model.map.Position;
+import com.pourist.swingy.model.villain.Villain;
+
+import java.util.Random;
 
 public class GameEngine {
     private final Hero hero;
     private GameMap gameMap;
     private GameState state;
+    private boolean fighting;
+    private final Random random = new Random();
 
     public GameEngine(Hero hero) {
         this.hero = hero;
@@ -20,23 +25,26 @@ public class GameEngine {
         Position next = nextPosition(direction);
 
         if (gameMap.isBound(next)) {
+            hero.setPreviousPosition();
             hero.setPosition(next);
             state = GameState.WON;
             return MoveResult.WON;
         }
 
         if (gameMap.hasVillain(next)) {
+            hero.setPreviousPosition();
             hero.setPosition(next);
             return MoveResult.ENCOUNTER;
         }
 
+        hero.setPreviousPosition();
         hero.setPosition(next);
         return MoveResult.NORMAL;
     }
 
     private Position nextPosition(Direction directionType) {
-        int x = hero.getPosition().getX();
-        int y = hero.getPosition().getY();
+        int x = hero.getPosition().x();
+        int y = hero.getPosition().y();
 
         switch (directionType) {
             case NORTH:
@@ -67,4 +75,95 @@ public class GameEngine {
         this.gameMap = MapFactory.createMap(hero.getLevel());
         hero.setPosition(gameMap.getCenterOfTheMap());
     }
+
+    public void createNextLevelMap () {
+        setUpMap();
+        this.state = GameState.PLAYING;
+    }
+
+    public boolean tryToRunAway() {
+        return random.nextBoolean();
+    }
+
+    public void moveBack() {
+        hero.setPosition(hero.getPreviousPosition());
+    }
+
+    public boolean isFighting() {
+        return fighting;
+    }
+
+    public void setFighting(boolean fightingState) {
+        fighting = fightingState;
+    }
+
+    public FightEvent fight() {
+
+        Villain villain = gameMap.getVillainAt(hero.getPosition());
+        fighting = true;
+
+        // --- Compute attack probabilities ---
+        int heroPower = hero.getAttack() + hero.getDefense();
+        int villainPower = villain.getAttack() + villain.getDefense();
+        int totalPower = heroPower + villainPower;
+
+        boolean heroAttacks =
+                random.nextInt(totalPower) < heroPower;
+
+        if (heroAttacks) {
+            // HERO ATTACKS
+            int damage = Math.max(
+                    0,
+                    hero.getAttack() - villain.getDefense() + random.nextInt(3)
+            );
+            villain.takeDamage(damage);
+
+            boolean villainDied = !villain.isAlive();
+
+            if (villainDied) {
+                hero.addExperience(villain.getExperienceReward());
+                if (villain.getEquipment() != null) {
+                    hero.equip(villain.getEquipment());
+                }
+                gameMap.removeVillainAt(hero.getPosition());
+                fighting = false;
+            }
+
+            return new FightEvent(
+                    hero.getName(),
+                    villain.getName(),
+                    damage,
+                    hero.getHitPoints(),
+                    Math.max(0, villain.getHitPoints()),
+                    villainDied,
+                    villainDied
+            );
+        }
+
+        // VILLAIN ATTACKS
+        int damage = Math.max(
+                0,
+                villain.getAttack() - hero.getDefense() + random.nextInt(3)
+        );
+        hero.takeDamage(damage);
+
+        boolean heroDied = !hero.isAlive();
+        if (heroDied) {
+            state = GameState.LOST;
+            fighting = false;
+        }
+
+        return new FightEvent(
+                villain.getName(),
+                hero.getName(),
+                damage,
+                Math.max(0, villain.getHitPoints()),
+                hero.getHitPoints(),
+                heroDied,
+                heroDied
+        );
+    }
+
+
+
 }
