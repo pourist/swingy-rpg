@@ -22,9 +22,10 @@ public class Hero {
     private int currentHitPoints;
 
     private Position    position;
-    private Weapon  weapon;
-    private Armor   armor;
-    private Helm    helm;
+    private Position    previousPosition = null;
+    private Weapon      weapon;
+    private Armor       armor;
+    private Helm        helm;
 
     private Hero(Builder builder) {
         this.name = builder.name;
@@ -197,6 +198,13 @@ public class Hero {
         return currentHitPoints > 0;
     }
 
+    public void setPreviousPosition() {
+        this.previousPosition = position;
+    }
+
+    public Position getPreviousPosition() {
+        return previousPosition;
+    }
 
     @Override
     public String toString() {
