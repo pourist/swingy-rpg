@@ -36,7 +36,6 @@ public final class DatabaseManager {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL UNIQUE,
                 hero_class TEXT NOT NULL,
-                level INTEGER NOT NULL,
                 experience INTEGER NOT NULL,
 
                 weapon_name  TEXT,
