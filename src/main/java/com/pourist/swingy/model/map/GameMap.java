@@ -40,8 +40,8 @@ public class GameMap {
     }
 
     private void generateMap() {
-        int centerX = center.getX();
-        int centerY = center.getY();
+        int centerX = center.x();
+        int centerY = center.y();
 
         for (int x = 0; x < mapHeight; x++) {
             for (int y = 0; y < mapHeight; y++) {
@@ -68,8 +68,8 @@ public class GameMap {
     }
 
     public boolean isBound(Position position) {
-        int x = position.getX();
-        int y = position.getY();
+        int x = position.x();
+        int y = position.y();
 
         return x == 0 || y == 0 || y == mapHeight - 1 || x == mapHeight - 1;
     }
@@ -85,5 +85,13 @@ public class GameMap {
 
     public Position getCenterOfTheMap() {
         return center;
+    }
+
+    public Villain getVillainAt(Position position) {
+        return villains.get(position);
+    }
+
+    public void removeVillainAt(Position position) {
+        villains.remove(position);
     }
 }
