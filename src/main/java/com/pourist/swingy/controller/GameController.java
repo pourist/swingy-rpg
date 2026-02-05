@@ -56,7 +56,8 @@ public class GameController {
     }
 
     private void handleEncounter() {
-        if (view.fightOrRunAway()) {
+        view.displayVillainEncounter(engine.getCurrentVillain());
+        if (!view.askIfWantsToFight()) {
             if (engine.tryToRunAway()) {
                 view.youLucky();
                 engine.moveBack();
