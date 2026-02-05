@@ -1,11 +1,11 @@
 NAME,MIN_LEVEL,MAX_LEVEL,POWER_MODIFIER
-Rat,1,1,-2
-Goblin,1,2,-1
-Bandit,2,3,0
-Wolf,2,3,1
-Skeleton,2,4,1
-Orc,2,5,2
-Dark Mage,3,6,3
-Troll,4,7,4
-Demon Knight,5,9,6
-Dragon Whelp,6,99,8
+Rat,1,1,1
+Goblin,1,2,2
+Bandit,2,3,3
+Wolf,2,3,4
+Skeleton,2,4,5
+Orc,2,5,6
+Dark Mage,3,6,7
+Troll,4,7,8
+Demon Knight,5,9,9
+Dragon Whelp,6,99,10

@@ -15,7 +15,7 @@ public class Villain {
     private Artifact equipment;
 
     private Villain(Builder builder) {
-        name = builder.name;;
+        name = builder.name;
         attack = builder.attack;
         defense = builder.defense;
         maxHitPoints = builder.hitPoints;
@@ -90,11 +90,11 @@ public class Villain {
 
     public void equip(Artifact artifact) {
         if (artifact instanceof Weapon) {
-            this.equipment = (Weapon) artifact;
+            this.equipment = artifact;
         } else if (artifact instanceof Armor) {
-            this.equipment = (Armor) artifact;
+            this.equipment = artifact;
         } else if (artifact instanceof Helm) {
-            this.equipment = (Helm) artifact;
+            this.equipment = artifact;
         } else {
             throw new IllegalArgumentException("Unknown artifact type");
         }
@@ -107,7 +107,7 @@ public class Villain {
     }
 
     public int getExperienceReward() {
-        return (attack + defense + maxHitPoints) * 2;
+        return (attack + defense + maxHitPoints) * 10;
     }
 }
 
