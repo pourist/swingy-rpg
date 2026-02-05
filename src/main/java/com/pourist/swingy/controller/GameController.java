@@ -72,11 +72,19 @@ public class GameController {
 
     private void handleFight() {
         engine.setFighting(true);
+
         while (engine.isFighting()) {
             FightEvent event = engine.fight();
             view.displayFightEvent(event);
+
+            if (event.defenderDied() && event.droppedArtifact() != null) {
+                if (view.askIfWantsArtifact(event.droppedArtifact())) {
+                    hero.equip(event.droppedArtifact());
+                }
+            }
         }
     }
+
 
 
     private void handleWin() {

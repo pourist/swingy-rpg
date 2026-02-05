@@ -1,5 +1,6 @@
 package com.pourist.swingy.view;
 
+import com.pourist.swingy.model.artifact.Artifact;
 import com.pourist.swingy.model.game.Direction;
 import com.pourist.swingy.model.game.FightEvent;
 import com.pourist.swingy.model.hero.Hero;
@@ -39,5 +40,7 @@ public interface View {
     void displayFightEvent(FightEvent result);
 
     void displayVillainEncounter(Villain villain) ;
+
+    boolean askIfWantsArtifact(Artifact artifact);
 
 }

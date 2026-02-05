@@ -1,5 +1,6 @@
 package com.pourist.swingy.view;
 
+import com.pourist.swingy.model.artifact.Artifact;
 import com.pourist.swingy.model.game.Direction;
 import com.pourist.swingy.model.game.FightEvent;
 import com.pourist.swingy.model.hero.Hero;
@@ -82,5 +83,10 @@ public class GuiView implements View {
     @Override
     public void displayVillainEncounter(Villain villain) {
 
+    }
+
+    @Override
+    public boolean askIfWantsArtifact(Artifact artifact) {
+        return true;
     }
 }

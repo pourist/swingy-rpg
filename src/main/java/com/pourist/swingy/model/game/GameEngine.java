@@ -1,5 +1,6 @@
 package com.pourist.swingy.model.game;
 
+import com.pourist.swingy.model.artifact.Artifact;
 import com.pourist.swingy.model.hero.Hero;
 import com.pourist.swingy.model.map.GameMap;
 import com.pourist.swingy.model.map.MapFactory;
@@ -14,6 +15,7 @@ public class GameEngine {
     private GameState state;
     private boolean fighting;
     private final Random random = new Random();
+    private Villain currentVillain;
 
     public GameEngine(Hero hero) {
         this.hero = hero;
@@ -32,6 +34,7 @@ public class GameEngine {
         }
 
         if (gameMap.hasVillain(next)) {
+            currentVillain = gameMap.getVillainAt(next);
             hero.setPreviousPosition();
             hero.setPosition(next);
             return MoveResult.ENCOUNTER;
@@ -97,6 +100,11 @@ public class GameEngine {
         fighting = fightingState;
     }
 
+    public Villain getCurrentVillain() {
+        return currentVillain;
+    }
+
+
     public FightEvent fight() {
 
         Villain villain = gameMap.getVillainAt(hero.getPosition());
@@ -122,12 +130,25 @@ public class GameEngine {
 
             if (villainDied) {
                 hero.addExperience(villain.getExperienceReward());
-                if (villain.getEquipment() != null) {
-                    hero.equip(villain.getEquipment());
-                }
+
+                Artifact dropped = villain.getEquipment();
+
+                currentVillain = null;
                 gameMap.removeVillainAt(hero.getPosition());
                 fighting = false;
+
+                return new FightEvent(
+                        hero.getName(),
+                        villain.getName(),
+                        damage,
+                        hero.getHitPoints(),
+                        0,
+                        true,
+                        true,
+                        dropped
+                );
             }
+
 
             return new FightEvent(
                     hero.getName(),
@@ -136,7 +157,8 @@ public class GameEngine {
                     hero.getHitPoints(),
                     Math.max(0, villain.getHitPoints()),
                     villainDied,
-                    villainDied
+                    villainDied,
+                    null
             );
         }
 
@@ -160,7 +182,8 @@ public class GameEngine {
                 Math.max(0, villain.getHitPoints()),
                 hero.getHitPoints(),
                 heroDied,
-                heroDied
+                heroDied,
+                null
         );
     }
 

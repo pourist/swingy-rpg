@@ -11,5 +11,9 @@ public record FightEvent(
         boolean defenderDied,
         boolean fightEnded,
         Artifact dropedArtifact
-) {}
+) {
+    public Artifact droppedArtifact() {
+        return dropedArtifact;
+    }
+}
 

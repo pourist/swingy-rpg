@@ -1,5 +1,6 @@
 package com.pourist.swingy.view;
 
+import com.pourist.swingy.model.artifact.Artifact;
 import com.pourist.swingy.model.game.Direction;
 import com.pourist.swingy.model.game.FightEvent;
 import com.pourist.swingy.model.hero.Hero;
@@ -40,7 +41,7 @@ public class ConsoleView implements View {
             }
             int input = scanner.nextInt();
             scanner.nextLine();
-            if (input > 0 && input < savedHeroes.size())
+            if (input > 0 && input < savedHeroes.size() + 1)
                 return input;
             System.out.println("Invalid choice, try again.");
         }
@@ -237,5 +238,20 @@ public class ConsoleView implements View {
 
         System.out.println("--------------------------------");
     }
+
+    @Override
+    public boolean askIfWantsArtifact(Artifact artifact) {
+        System.out.println("The villain dropped: " + artifact.getName() +
+                " (+" + artifact.getBonusValue() + ")");
+        System.out.println("Do you want to equip it? (y/n)");
+
+        while (true) {
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("y")) return true;
+            if (input.equals("n")) return false;
+            System.out.println("Please enter y or n.");
+        }
+    }
+
 
 }
