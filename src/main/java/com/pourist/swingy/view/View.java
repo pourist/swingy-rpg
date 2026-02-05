@@ -5,6 +5,7 @@ import com.pourist.swingy.model.game.FightEvent;
 import com.pourist.swingy.model.hero.Hero;
 import com.pourist.swingy.model.hero.HeroClass;
 import com.pourist.swingy.model.map.Position;
+import com.pourist.swingy.model.villain.Villain;
 
 import java.util.List;
 
@@ -29,11 +30,14 @@ public interface View {
 
     void displayHeroPosition(Position position);
 
-    boolean fightOrRunAway();
+    boolean askIfWantsToFight();
 
     void youLucky();
 
     void youUnlucky();
 
     void displayFightEvent(FightEvent result);
+
+    void displayVillainEncounter(Villain villain) ;
+
 }
