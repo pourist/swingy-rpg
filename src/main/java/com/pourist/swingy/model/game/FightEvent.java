@@ -1,5 +1,7 @@
 package com.pourist.swingy.model.game;
 
+import com.pourist.swingy.model.artifact.Artifact;
+
 public record FightEvent(
         String attacker,
         String defender,
@@ -7,6 +9,7 @@ public record FightEvent(
         int attackerHp,
         int defenderHp,
         boolean defenderDied,
-        boolean fightEnded
+        boolean fightEnded,
+        Artifact dropedArtifact
 ) {}
 
