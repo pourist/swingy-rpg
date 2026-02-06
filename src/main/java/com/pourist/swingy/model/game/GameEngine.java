@@ -45,11 +45,11 @@ public class GameEngine {
         return MoveResult.NORMAL;
     }
 
-    private Position nextPosition(Direction directionType) {
+    private Position nextPosition(Direction direction) {
         int x = hero.getPosition().x();
         int y = hero.getPosition().y();
 
-        switch (directionType) {
+        switch (direction) {
             case NORTH:
                 y--;
                 break;
