@@ -1,118 +1,228 @@
 package com.pourist.swingy.controller;
 
+import com.pourist.swingy.application.GameService;
 import com.pourist.swingy.model.game.*;
 import com.pourist.swingy.model.hero.Hero;
 import com.pourist.swingy.model.hero.HeroClass;
 import com.pourist.swingy.persistence.HeroRepository;
+import com.pourist.swingy.view.ConsoleView;
+import com.pourist.swingy.view.GuiView;
 import com.pourist.swingy.view.View;
+import com.pourist.swingy.view.ViewProvider;
 
 import java.util.List;
 
 public class GameController {
 
-    private final View view;
+    public enum GameEvent {
+        CONTINUE,
+        END_GAME,
+        SWITCH_TO_GUI,
+        SWITCH_TO_CONSOLE
+    }
+
+    private final ViewProvider viewProvider;
     private final HeroRepository heroRepository;
+    private final GameService gameService;
 
-    private GameEngine engine;
-    private Hero hero;
-
-    public GameController(View view, HeroRepository heroRepository) {
-        this.view = view;
+    public GameController(ViewProvider viewProvider,
+                          HeroRepository heroRepository) {
+        this.viewProvider = viewProvider;
         this.heroRepository = heroRepository;
+        this.gameService = new GameService(heroRepository);
     }
 
     public void start() {
-        createHero();
-        engine = new GameEngine(hero);
-        gameLoop();
+        Hero hero = createHero();
+        gameService.startGame(hero);
     }
 
-    private void gameLoop() {
-        while (true) {
-            switch (engine.getState()) {
-                case WON -> handleWin();
-                case LOST -> {
-                    handleLoss();
-                    return;
-                }
-                case PLAYING -> handleTurn();
+    public GameEvent tick() {
+
+        View view = viewProvider.get();
+
+        switch (gameService.getState()) {
+
+            case WON -> {
+                gameService.handleWin();
+                view.youWon();
+                return GameEvent.CONTINUE;
+            }
+
+            case LOST -> {
+                gameService.handleLoss();
+                view.gameOver();
+                return GameEvent.END_GAME;
+            }
+
+            case PLAYING -> {
+                return handleTurn(view);
             }
         }
+        return GameEvent.END_GAME;
     }
 
-    private void handleTurn() {
+    private GameEvent handleTurn(View view) {
+
+        Hero hero = gameService.getHero();
+
         view.displayGameState(hero);
         view.displayHeroPosition(hero.getPosition());
 
-        MoveResult result = heroMoves();
-        if (result == MoveResult.ENCOUNTER) {
-            handleEncounter();
-        }
-    }
+        MoveResult result;
+        while (true) {
+            view.directionMenu();
+            InputCommand command = view.askCommand();
+            switch (command) {
 
-    private MoveResult heroMoves() {
-        Direction direction = view.askDirection();
-        return engine.move(direction);
-    }
+                case SWITCH_TO_GUI:
+                    return GameEvent.SWITCH_TO_GUI;
 
-    private void handleEncounter() {
-        view.displayVillainEncounter(engine.getCurrentVillain());
-        if (!view.askIfWantsToFight()) {
-            if (engine.tryToRunAway()) {
-                view.youLucky();
-                engine.moveBack();
-            } else {
-                view.youUnlucky();
-                handleFight();
+                case SWITCH_TO_CONSOLE:
+                    return GameEvent.SWITCH_TO_CONSOLE;
+
+                case MOVE_NORTH:
+                    result = gameService.move(Direction.NORTH);
+                    break;
+
+                case MOVE_SOUTH:
+                    result = gameService.move(Direction.SOUTH);
+                    break;
+
+                case MOVE_EAST:
+                    result = gameService.move(Direction.EAST);
+                    break;
+
+                case MOVE_WEST:
+                    result = gameService.move(Direction.WEST);
+                    break;
+                default:
+                    view.invalidInput();
+                    continue;
             }
-        } else {
-            handleFight();
+            break;
+        }
+
+        if (result == MoveResult.ENCOUNTER) {
+            handleEncounter(view);
+        }
+
+        return GameEvent.CONTINUE;
+    }
+
+    private GameEvent handleEncounter(View view) {
+
+        view.displayVillainEncounter(gameService.getCurrentVillain());
+
+        while (true) {
+            view.askIfWantsToFight();
+            InputCommand command = view.askCommand();
+
+            switch (command) {
+
+                case RUN:
+                    if (gameService.tryToRunAway()) {
+                        view.youLucky();
+                        gameService.moveBack();
+                        return GameEvent.CONTINUE;
+                    }
+                    view.youUnlucky();
+                    return handleFight(view);
+
+                case FIGHT:
+                    return handleFight(view);
+
+                default:
+                    view.invalidInput();
+            }
         }
     }
 
-    private void handleFight() {
-        engine.setFighting(true);
 
-        while (engine.isFighting()) {
-            FightEvent event = engine.fight();
+    private GameEvent handleFight(View view) {
+
+        gameService.beginFight();
+
+        while (gameService.isFighting()) {
+
+            FightEvent event = gameService.fightStep();
+
             view.displayFightEvent(event);
 
             if (event.defenderDied() && event.droppedArtifact() != null) {
-                if (view.askIfWantsArtifact(event.droppedArtifact())) {
-                    hero.equip(event.droppedArtifact());
+
+                while (true) { ///  Have issue at this stage
+                    view.askIfWantsArtifact(gameService.getCurrentVillain().getEquipment());
+                    InputCommand command = view.askCommand();
+
+                    switch (command) {
+
+                        case SWITCH_TO_GUI:
+                            return GameEvent.SWITCH_TO_GUI;
+
+                        case SWITCH_TO_CONSOLE:
+                            return GameEvent.SWITCH_TO_CONSOLE;
+
+                        case TAKE_ARTIFACT:
+                            gameService.equipArtifact(event.droppedArtifact());
+                            break;
+
+                        case SKIP_ARTIFACT:
+                            break;
+
+                        default:
+                            continue;
+                    }
+
+                    break;
                 }
+            }
+        }
+
+        return GameEvent.CONTINUE;
+    }
+
+
+    private Hero createHero() {
+
+        View view = viewProvider.get();
+
+        List<Hero> savedHeroes = heroRepository.loadAll();
+
+        while (true) {
+
+            HeroCreationCommand command =
+                    view.askHeroCreationCommand();
+
+            switch (command) {
+
+                case SWITCH_TO_GUI:
+                    viewProvider.set(new GuiView());
+                    view = viewProvider.get();
+                    continue;
+
+                case SWITCH_TO_CONSOLE:
+                    viewProvider.set(new ConsoleView());
+                    view = viewProvider.get();
+                    continue;
+
+                case LOAD_HERO:
+                    int index = view.chooseHeroToLoad(savedHeroes) - 1;
+                    return savedHeroes.get(index);
+
+                case CREATE_HERO:
+                    String name = view.askHeroName();
+                    HeroClass heroClass = view.askHeroClass();
+
+                    Hero hero = new Hero.Builder()
+                            .withName(name)
+                            .withHeroClass(heroClass)
+                            .build();
+
+                    heroRepository.save(hero);
+                    return hero;
             }
         }
     }
 
-
-
-    private void handleWin() {
-        heroRepository.save(hero);
-        view.youWon();
-        engine.createNextLevelMap();
-    }
-
-    private void handleLoss() {
-        heroRepository.save(hero);
-        view.gameOver();
-    }
-
-
-    private void createHero() {
-        List<Hero> savedHeroes = heroRepository.loadAll();
-
-        if (!savedHeroes.isEmpty() && view.askLoadOrCreateHero()) {
-            int index = view.choosHeroToLoad(savedHeroes) - 1;
-            hero = savedHeroes.get(index);
-        } else {
-            String name = view.askHeroName();
-            HeroClass heroClass = view.askHeroClass();
-            hero = new Hero.Builder()
-                    .withName(name)
-                    .withHeroClass(heroClass)
-                    .build();
-            heroRepository.save(hero);
-        }
-    }
 }
