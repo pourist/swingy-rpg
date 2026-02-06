@@ -1,7 +1,8 @@
 package com.pourist.swingy.view;
 
+import com.pourist.swingy.controller.HeroCreationCommand;
 import com.pourist.swingy.model.artifact.Artifact;
-import com.pourist.swingy.model.game.Direction;
+import com.pourist.swingy.controller.InputCommand;
 import com.pourist.swingy.model.game.FightEvent;
 import com.pourist.swingy.model.hero.Hero;
 import com.pourist.swingy.model.hero.HeroClass;
@@ -12,14 +13,14 @@ import java.util.List;
 
 public interface View {
 
-    boolean askLoadOrCreateHero();
+    HeroCreationCommand askHeroCreationCommand();
 
-    int choosHeroToLoad(List<Hero> savedHeroes);
+    int chooseHeroToLoad(List<Hero> savedHeroes);
 
     String askHeroName();
     HeroClass askHeroClass();
 
-    Direction askDirection();
+    InputCommand askCommand();
 
     void displayGameState(Hero hero);
 
@@ -31,7 +32,7 @@ public interface View {
 
     void displayHeroPosition(Position position);
 
-    boolean askIfWantsToFight();
+    void askIfWantsToFight();
 
     void youLucky();
 
@@ -41,6 +42,9 @@ public interface View {
 
     void displayVillainEncounter(Villain villain) ;
 
-    boolean askIfWantsArtifact(Artifact artifact);
+    void askIfWantsArtifact(Artifact artifact);
 
+    void    invalidInput();
+
+    void directionMenu();
 }

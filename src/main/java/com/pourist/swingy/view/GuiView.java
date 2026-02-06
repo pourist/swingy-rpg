@@ -1,7 +1,8 @@
 package com.pourist.swingy.view;
 
+import com.pourist.swingy.controller.HeroCreationCommand;
 import com.pourist.swingy.model.artifact.Artifact;
-import com.pourist.swingy.model.game.Direction;
+import com.pourist.swingy.controller.InputCommand;
 import com.pourist.swingy.model.game.FightEvent;
 import com.pourist.swingy.model.hero.Hero;
 import com.pourist.swingy.model.hero.HeroClass;
@@ -13,12 +14,12 @@ import java.util.List;
 public class GuiView implements View {
 
     @Override
-    public boolean askLoadOrCreateHero() {
-        return false;
+    public HeroCreationCommand askHeroCreationCommand() {
+        return null;
     }
 
     @Override
-    public int choosHeroToLoad(List<Hero> savedHeroes) {
+    public int chooseHeroToLoad(List<Hero> savedHeroes) {
         return 1;
     }
 
@@ -57,8 +58,8 @@ public class GuiView implements View {
     }
 
     @Override
-    public boolean askIfWantsToFight() {
-        return false;
+    public void askIfWantsToFight() {
+
     }
 
     @Override
@@ -72,7 +73,7 @@ public class GuiView implements View {
     }
 
     @Override
-    public Direction askDirection() {
+    public InputCommand askCommand() {
         return null;
     }
 
@@ -86,7 +87,15 @@ public class GuiView implements View {
     }
 
     @Override
-    public boolean askIfWantsArtifact(Artifact artifact) {
-        return true;
+    public void askIfWantsArtifact(Artifact artifact) {
+
     }
+
+    @Override
+    public void    invalidInput() {
+
+    }
+
+    @Override
+    public void directionMenu() {}
 }

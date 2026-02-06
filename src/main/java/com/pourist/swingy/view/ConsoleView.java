@@ -1,7 +1,8 @@
 package com.pourist.swingy.view;
 
+import com.pourist.swingy.controller.HeroCreationCommand;
 import com.pourist.swingy.model.artifact.Artifact;
-import com.pourist.swingy.model.game.Direction;
+import com.pourist.swingy.controller.InputCommand;
 import com.pourist.swingy.model.game.FightEvent;
 import com.pourist.swingy.model.hero.Hero;
 import com.pourist.swingy.model.hero.HeroClass;
@@ -16,22 +17,31 @@ public class ConsoleView implements View {
     private final Scanner scanner = new Scanner(System.in);
 
     @Override
-    public boolean askLoadOrCreateHero() {
+    public HeroCreationCommand askHeroCreationCommand() {
         while (true) {
             System.out.println("Create a new Hero (1)");
             System.out.println("Load a saved Hero (2)");
+            System.out.println("To switch interface (GUI)");
 
             String input = scanner.nextLine().trim();
 
-            if (input.equals("1")) return false; // create
-            if (input.equals("2")) return true;  // load
-
+            switch (input) {
+                case "1" -> {
+                    return HeroCreationCommand.CREATE_HERO; // create
+                }
+                case "2" -> {
+                    return HeroCreationCommand.LOAD_HERO;  // load
+                }
+                case "gui" -> {
+                    return HeroCreationCommand.SWITCH_TO_GUI;
+                }
+            }
             System.out.println("Invalid choice, try again.");
         }
     }
 
     @Override
-    public int choosHeroToLoad(List<Hero> savedHeroes) {
+    public int chooseHeroToLoad(List<Hero> savedHeroes) {
         while (true) {
             System.out.println("Choose your Hero:");
             for (int i = 0; i < savedHeroes.size(); i++) {
@@ -39,10 +49,17 @@ public class ConsoleView implements View {
                 System.out.println("\tExperience: " + savedHeroes.get(i).getExperience() +
                         " Hero class: " + savedHeroes.get(i).getHeroClass());
             }
-            int input = scanner.nextInt();
-            scanner.nextLine();
-            if (input > 0 && input < savedHeroes.size() + 1)
-                return input;
+            String line = scanner.nextLine();
+
+            try {
+                int input = Integer.parseInt(line);
+
+                if (input > 0 && input <= savedHeroes.size()) {
+                    return input;
+                }
+
+            } catch (NumberFormatException ignored) {}
+
             System.out.println("Invalid choice, try again.");
         }
     }
@@ -162,22 +179,10 @@ public class ConsoleView implements View {
 
 
     @Override
-    public boolean askIfWantsToFight() {
-        while (true) {
+    public void askIfWantsToFight() {
             System.out.println("What do you want to do?");
-            System.out.println("Fight (f)");
-            System.out.println("Run away (r)");
-
-            String input = scanner.nextLine().trim().toLowerCase();
-
-            if (input.equals("f"))
-                return true;   // fight
-
-            if (input.equals("r"))
-                return false;  // run
-
-            System.out.println("Invalid choice, please enter 'f' or 'r'.");
-        }
+            System.out.print("Fight (fight) / ");
+            System.out.println("Run away (run)");
     }
 
 
@@ -192,30 +197,33 @@ public class ConsoleView implements View {
     }
 
     @Override
-    public Direction askDirection() {
-        while (true) {
-            System.out.println("Choose direction to move:");
-            System.out.println("North (n)");
-            System.out.println("East (e)");
-            System.out.println("South (S)");
-            System.out.println("West (w)");
-
-            String input = scanner.nextLine().trim().toLowerCase();
-
-            switch (input) {
-                case "w":
-                    return Direction.WEST;
-                case "e":
-                    return Direction.EAST;
-                case "n":
-                    return Direction.NORTH;
-                case "s":
-                    return Direction.SOUTH;
-                default:
-                    System.out.println("Invalid choice, try again.");
-            }
-        }
+    public void directionMenu() {
+        System.out.println("Choose direction to move:");
+        System.out.println("North (n)");
+        System.out.println("East (e)");
+        System.out.println("South (S)");
+        System.out.println("West (w)");
+        System.out.println("To change interface: (GUI)");
     }
+
+    @Override
+    public InputCommand askCommand() {
+        String input = scanner.nextLine().trim().toLowerCase();
+
+        return switch (input) {
+            case "w" -> InputCommand.MOVE_WEST;
+            case "e" -> InputCommand.MOVE_EAST;
+            case "n" -> InputCommand.MOVE_NORTH;
+            case "s" -> InputCommand.MOVE_SOUTH;
+            case "gui" -> InputCommand.SWITCH_TO_GUI;
+            case "take" -> InputCommand.TAKE_ARTIFACT;
+            case "skip" -> InputCommand.SKIP_ARTIFACT;
+            case "run" -> InputCommand.RUN;
+            case "fight" -> InputCommand.FIGHT;
+            default -> InputCommand.INVALID;
+        };
+    }
+
 
     @Override
     public void displayFightEvent(FightEvent event) {
@@ -240,17 +248,15 @@ public class ConsoleView implements View {
     }
 
     @Override
-    public boolean askIfWantsArtifact(Artifact artifact) {
+    public void askIfWantsArtifact(Artifact artifact) {
         System.out.println("The villain dropped: " + artifact.getName() +
                 " (+" + artifact.getBonusValue() + ")");
-        System.out.println("Do you want to equip it? (y/n)");
+        System.out.println("Do you want to equip it? (take/skip)");
+    }
 
-        while (true) {
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("y")) return true;
-            if (input.equals("n")) return false;
-            System.out.println("Please enter y or n.");
-        }
+    @Override
+    public void invalidInput() {
+        System.out.println("Invalid choice, try again.");
     }
 
 
